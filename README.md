@@ -9,3 +9,6 @@ https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/0.266.1/presto-cli
 Run the CLI with the --help option to see the available options.  
 
 MySQL Connector: https://prestodb.io/docs/current/connector/mysql.html  
+
+Presto - MySQL Connector testing  
+https://www.tutorialspoint.com/apache_presto/apache_presto_mysql_connector.htm  
