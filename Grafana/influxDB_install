@@ -1,0 +1,42 @@
+### Create Repo for influxDB ###
+cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
+[influxdb]
+name = InfluxDB Repository - RHEL 7
+baseurl = https://repos.influxdata.com/rhel/7/x86_64/stable
+enabled = 1
+gpgcheck = 1
+gpgkey = https://repos.influxdata.com/influxdb.key
+EOF
+
+### Confirm repository ###
+yum makecache
+
+### install influxDB ###
+yum -y install influxdb
+
+### Start & enable service ###
+systemctl start influxdb && sudo systemctl enable influxdb
+
+### Configure firewall ###
+firewall-cmd --add-port=8086/tcp --permanent
+firewall-cmd --reload
+
+### InfluxDB http Authentication (Optional) ###
+vim /etc/influxdb/influxdb.conf
+[http]
+enabled = true
+auth-enabled = true
+
+### Create a user with an authentication password ###
+curl -XPOST "http://3.0.98.104:8086/query" --data-urlencode "q=CREATE USER admin WITH PASSWORD 'StrongPassw0rd' WITH ALL PRIVILEGES"
+
+### Restart influxDB ###
+systemctl restart influxd
+
+### InfluxDB CMD ###
+# influx -username 'admin' -password 'StrongPassw0rd'
+Connected to http://localhost:8086 version 1.8.10
+InfluxDB shell version: 1.8.10
+> quit
+
+curl -G http://3.0.98.104:8086/query -u admin:StrongPassw0rd --data-urlencode "q=SHOW DATABASES"
