@@ -40,3 +40,60 @@ InfluxDB shell version: 1.8.10
 > quit
 
 curl -G http://3.0.98.104:8086/query -u admin:StrongPassw0rd --data-urlencode "q=SHOW DATABASES"
+
+####################################################################
+
+Telegraf
+
+### Install telegraf ###
+yum -y install telegraf
+
+
+$ influx
+Connected to http://localhost:8086 version 1.7.7
+InfluxDB shell version: 1.7.7
+
+> CREATE USER admin WITH PASSWORD 'password' WITH ALL PRIVILEGES
+> SHOW USERS
+
+user   admin
+----   -----
+admin  true
+
+b – Create a user account for Telegraf
+Now that you have an admin account, create an account for Telegraf
+
+> CREATE USER telegraf WITH PASSWORD 'password' WITH ALL PRIVILEGES
+> SHOW USERS
+
+user      admin
+----      -----
+admin     true
+telegraf  true
+
+### /etc/influxdb/influxdb.conf and edit the following lines. ###
+
+[http]
+  # Determines whether HTTP endpoint is enabled.
+  enabled = true
+  
+  # The bind address used by the HTTP service.
+  bind-address = ":8086"
+
+  # Determines whether user authentication is enabled over HTTP/HTTPS.
+  auth-enabled = true
+  
+  
+
+### /etc/telegraf/telegraf.conf and edit the following lines. ###
+
+Modify the following lines :
+
+## HTTP Basic Auth
+  username = "telegraf"
+  password = "password"
+Restart the Telegraf service, as well as the InfluxDB service.
+
+$ sudo systemctl restart influxdb
+$ sudo systemctl restart telegraf
+
